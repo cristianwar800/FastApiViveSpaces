@@ -116,69 +116,6 @@ def get_db_connection():
         raise HTTPException(status_code=500, detail=f"Error de conexión a la base de datos: {str(err)}")
 
 
-def check_and_create_columns():
-    """Verificar y crear columnas faltantes en search_events"""
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # Definir columnas requeridas con sus tipos
-        required_columns = {
-            'scroll_depth': 'INT NULL',
-            'referrer': 'VARCHAR(500) NULL',
-            'click_position': 'INT NULL',
-            'time_spent': 'INT NULL',
-            'property_id': 'INT NULL',
-            'element_clicked': 'VARCHAR(255) NULL',
-            'filter_changed': 'VARCHAR(255) NULL'
-        }
-        
-        # Obtener columnas existentes
-        cursor.execute("SHOW COLUMNS FROM search_events")
-        existing_columns = [col[0] for col in cursor.fetchall()]
-        
-        print("=" * 70)
-        print("🔍 VERIFICANDO ESTRUCTURA DE LA TABLA search_events")
-        print("=" * 70)
-        
-        # Verificar y crear columnas faltantes
-        columns_added = []
-        for column_name, column_type in required_columns.items():
-            if column_name not in existing_columns:
-                print(f"⚠️ Columna '{column_name}' no existe - Creando...")
-                alter_query = f"ALTER TABLE search_events ADD COLUMN {column_name} {column_type}"
-                cursor.execute(alter_query)
-                conn.commit()
-                columns_added.append(column_name)
-                print(f"✅ Columna '{column_name}' creada exitosamente")
-            else:
-                print(f"✓ Columna '{column_name}' ya existe")
-        
-        cursor.close()
-        conn.close()
-        
-        if columns_added:
-            print("=" * 70)
-            print(f"🎉 Se agregaron {len(columns_added)} columnas nuevas:")
-            for col in columns_added:
-                print(f"   - {col}")
-        else:
-            print("✅ Todas las columnas requeridas ya existen")
-        
-        print("=" * 70 + "\n")
-        
-        return True
-        
-    except mysql.connector.Error as err:
-        print(f"❌ Error al verificar/crear columnas: {err}")
-        traceback.print_exc()
-        return False
-    except Exception as e:
-        print(f"❌ Error inesperado: {str(e)}")
-        traceback.print_exc()
-        return False
-
-
 # ===================== EVENTOS DE INICIO =====================
 
 @app.on_event("startup")
@@ -197,10 +134,6 @@ async def startup_event():
     print(f"   - Host BD: {os.getenv('DB_HOST', 'localhost')}")
     print(f"   - Puerto BD: {os.getenv('DB_PORT', 3306)}")
     print("=" * 70)
-    
-    # Verificar y crear columnas faltantes
-    check_and_create_columns()
-    
     print("⏳ Cargando modelos de Machine Learning...")
     print("=" * 70 + "\n")
 
