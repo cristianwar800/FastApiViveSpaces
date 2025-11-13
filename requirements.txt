@@ -1,0 +1,23 @@
+# FastAPI (funciona perfecto en 3.12)
+fastapi==0.116.1
+uvicorn==0.35.0
+python-multipart==0.0.20
+python-dotenv==1.0.0
+
+# Base de datos
+mysql-connector-python==9.1.0
+
+# Stack científico (versiones 3.12-optimizadas)
+numpy>=1.26.0,<2.0.0     # 1.26+ tiene mejor soporte para 3.12
+pandas>=2.1.4,<3.0.0     # 2.1.4+ corrigió bugs de 3.12
+scikit-learn>=1.4.0,<1.7.0  # 1.4+ tiene optimizaciones para 3.12
+
+# NLP (versiones 3.12-compatibles)
+nltk>=3.8.1,<4.0.0
+textblob>=0.18.0,<1.0.0
+
+# Visualización (3.12-ready)
+matplotlib>=3.8.0,<4.0.0  # 3.8+ soporte nativo 3.12
+plotly>=5.18.0,<6.0.0     # 5.18+ corrigió problemas 3.12
+seaborn>=0.13.0,<1.0.0
+wordcloud>=1.9.3,<2.0.0   # 1.9.3+ funciona en 3.12
